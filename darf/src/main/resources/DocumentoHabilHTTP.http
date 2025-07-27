@@ -1,0 +1,55 @@
+### 1. Criar Documento Hábil (POST /documentos)
+POST http://localhost:8080/documentos
+Content-Type: application/json
+
+{
+  "ug": "PRIMARIA",
+  "numeroDh": "2025AB123456",
+  "cnpj": "09577042000164",
+  "numeroNf": 180,
+  "dataNf": "2025-07-15",
+  "naturezaRendimento": "SERVICOS_COM_EMPREGOS_DE_MATERIAIS",
+  "retencao": {
+    "codigoRfb": "6190",
+    "valorBruto": 0.00
+  }
+}
+
+### 2. Listar Todos os Documentos Hábil (GET /documentos)
+GET http://localhost:8080/documentos
+
+
+### 3. Buscar Documento Hábil por ID (GET /documentos/{id})
+GET http://localhost:8080/documentos/2
+
+
+### 4. Deletar Documento Hábil (DELETE /documentos/{id})
+DELETE http://localhost:8080/documentos/1
+
+
+### 5. Atualizar Documento Hábil (PUT /documentos/{id})
+PUT http://localhost:8080/documentos/2
+Content-Type: application/json
+
+{
+  "ug": "PRIMARIA",
+  "numeroDh": "2025CD654321",
+  "cnpj": "09577042000164",
+  "numeroNf": 2020,
+  "dataNf": "2025-07-16",
+  "naturezaRendimento": "SERVICOS_HOSPITALARES",
+  "retencao": {
+    "codigoRfb": "8767",
+    "valorBruto": 200.00
+  }
+}
+
+### 6. Marcar Documento Hábil como Pago (PATCH /documentos/{id}/pagar)
+PATCH http://localhost:8080/documentos/1/pagar
+
+### 7. Filtrar Documentos Hábil Pago por CNPJ e Competência (GET /documentos/filtrar)
+GET http://localhost:8080/documentos/filtrar?cnpj=12345678000195&competencia=2025-07
+
+### 8. Filtrar CNPJ's que possuem Documentos Hábil Pago(s) numa Competência e UG
+GET http://localhost:8080/documentos/cnpjs-pagos?competencia=2025-08&ug=SECUNDARIA
+
