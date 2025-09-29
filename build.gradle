@@ -1,0 +1,81 @@
+// Plugins utilizados no projeto
+plugins {
+    id 'java'                                         // Suporte a projetos Java
+    id 'org.springframework.boot' version '3.5.3'     // Spring Boot com versão 3.5.3
+    id 'io.spring.dependency-management' version '1.1.7' // Gerenciador automático de versões das dependências
+}
+
+// Grupo base do projeto e versão atual
+group = 'org.api'
+version = '0.0.1-SNAPSHOT'
+
+// Define que o projeto usará Java 21 por meio do Java Toolchain
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+// Garante que as dependências de anotação (como MapStruct e Lombok) sejam utilizadas em tempo de compilação
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+// Repositório central do Maven para resolução das dependências
+repositories {
+    mavenCentral()
+}
+
+// Dependências do projeto
+dependencies {
+
+    // Starter Web: fornece suporte para criação de APIs REST (Tomcat embutido, Jackson, etc.)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Starter JPA: fornece integração com banco de dados via JPA (Hibernate incluso)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Starter Validation: suporte a validações com Bean Validation (anotações @NotNull, @Size etc.)
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Validação com Jakarta Bean Validation (versões mais recentes e separadas por módulo)
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    implementation 'org.glassfish:jakarta.el:4.0.2'
+
+    // Driver JDBC do PostgreSQL
+    implementation 'org.postgresql:postgresql:42.7.3'
+
+    // MapStruct: mapeamento automático entre entidades e DTOs
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
+    // Lombok: geração de código boilerplate (getters, setters, constructors, etc.)
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0") // Integração Lombok + MapStruct
+
+    // Spring DevTools: reinicialização automática em ambiente de desenvolvimento
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Spring Security: proteção básica e autenticação/autorização
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // BCryptPasswordEncoder: criptografia segura de senhas
+    implementation 'org.springframework.security:spring-security-core'
+
+    // Dependências para testes automatizados com JUnit, Mockito, etc.
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Auth0's java-jwt
+    implementation("com.auth0:java-jwt:4.5.0")
+
+}
+
+// Configuração do task de testes para utilizar o JUnit Platform
+tasks.named('test') {
+    useJUnitPlatform()
+}

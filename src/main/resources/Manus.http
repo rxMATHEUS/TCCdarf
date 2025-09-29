@@ -1,0 +1,141 @@
+# HTTP Client collection for DARF API
+# Run each request in IntelliJ/JetBrains .http client
+
+@baseUrl = http://localhost:8080
+@token =
+
+### Auth - Register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Usuario Teste",
+  "cpf": "52998224725",
+  "password": "senhaSegura123"
+}
+
+### Auth - Login (saves {{token}})
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "cpf": "52998224725",
+  "password": "senhaSegura123"
+}
+
+> {%
+// Save JWT token from response into global variable {{token}}
+try {
+  var json = JSON.parse(response.body);
+  if (json && json.token) {
+    client.global.set("token", json.token);
+    client.log("Token salvo em {{token}}");
+  }
+} catch (e) {
+  client.log("Nao foi possivel extrair o token automaticamente.");
+}
+%}
+
+### User - Get authenticated user (optional auth)
+GET {{baseUrl}}/user
+Accept: text/plain
+Authorization: Bearer {{token}}
+
+### Documentos - Criar
+POST {{baseUrl}}/documentos
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "ug": "SECUNDARIA",
+  "numeroDh": "2025NP100546",
+  "cnpj": "19131243000197",
+  "numeroNf": 87878,
+  "dataNf": "2025-02-15",
+  "dataPagamento": "2025-02-26",
+  "naturezaRendimento": "DEMAIS_SERVICOS",
+  "retencao": {
+    "codigoRfb": "6190",
+    "valorBruto": 100.00
+  }
+}
+
+### Documentos - Buscar por ID
+GET {{baseUrl}}/documentos/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Documentos - Listar todos (paginado)
+GET {{baseUrl}}/documentos?page=0&size=10&sort=dataNf,desc
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Documentos - Listar por status
+GET {{baseUrl}}/documentos?status=PAGO&page=0&size=10
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Documentos - Atualizar por ID
+PUT {{baseUrl}}/documentos/1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "ug": "SECUNDARIA",
+  "numeroDh": "2025CD654321",
+  "cnpj": "19131243000197",
+  "numeroNf": 12345,
+  "dataNf": "2025-01-10",
+  "dataPagamento": "2025-02-05",
+  "status": "PAGO",
+  "naturezaRendimento": "ALIMENTACAO",
+  "retencao": {
+    "codigoRfb": "6190",
+    "valorBruto": "1500.50"
+  }
+}
+
+### Documentos - Deletar por ID
+DELETE {{baseUrl}}/documentos/1
+Authorization: Bearer {{token}}
+
+### Documentos - Marcar como Pago (PATCH)
+PATCH {{baseUrl}}/documentos/2/pagar
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Documentos - Filtrar (flexivel)
+GET {{baseUrl}}/documentos/filtrar?cnpj=19131243000197&competencia=2024-08&status=LIQUIDADO&ug=PRIMARIA&anoNf=2024&mesNf=8&anoPagamento=2024&mesPagamento=9&page=0&size=10&sort=dataNf,desc
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Documentos - CNPJs com pagamentos no mes/UG
+GET {{baseUrl}}/documentos/cnpjs-pagos?competencia=2025-09&ug=PRIMARIA&page=0&size=10&sort=cnpj,asc
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Documentos - Agregados
+GET {{baseUrl}}/documentos/agregados?anoNf=2024&mesNf=8&anoPagamento=2024&mesPagamento=9&ug=SECUNDARIA
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Documentos - Busca por numeroDh
+GET {{baseUrl}}/documentos/buscar?numeroDh=2025NP100546
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Documentos - Autocomplete (página 0 padrão)
+GET {{baseUrl}}/documentos/autocomplete?term=2025NP&page=0&size=10
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Documentos - Autocomplete (página 1)
+GET {{baseUrl}}/documentos/autocomplete?term=2025NP
+Accept: application/json
+Authorization: Bearer {{token}}
+
+
